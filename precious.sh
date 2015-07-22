@@ -39,4 +39,7 @@ echo -e "\a"
 sleep 0.1
 echo -e "\a"
 sleep 0.1
+
 printBlue "All done. :)"
+
+notify-send "Done setting up openshift locally "

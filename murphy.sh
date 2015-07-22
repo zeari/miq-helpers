@@ -4,9 +4,12 @@ set -e
 
 PREVPWD="`dirname $0`"
 source $PREVPWD/colors.sh
+NEWLINE=$'\n'
 
-usage="murphy.sh [REF]
-REF can be HEAD^ or HEAD~4"
+function usage() {
+	printGreen 'usage: murphy.sh [REF]'
+	printGreen '       REF can be HEAD^^ or HEAD~4. It defaults to HEAD^.'
+}
 
 function clean_up {
         printRed "Error"
@@ -36,11 +39,32 @@ function gen_seq() {
 }
 
 
+while getopts :h: FLAG; do
+  case $FLAG in
+    h)  #show help
+      usage
+      exit
+      ;;
+    \?) #unrecognized option - show help
+      echo -e \\n"Unknown option -${BOLD}$OPTARG${NORM}."
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))  #This tells getopts to move on to the next argument.
+
 
 eval "git rev-parse" &> /dev/null ||  die_error "Change dir into a git repo."
 
 if ! type haml-lint > /dev/null; then
-	die_error "haml-lint not found. Please install with \'gem install haml-lint\'"
+	if ! type unbuffer > /dev/null; then
+		die_error "haml-lint and unbuffer not found. Please install with \'gem install haml-lint\' \'sudo yum install expect\'"
+		
+	else
+		die_error "haml-lint not found. Please install with \'gem install haml-lint\'"
+	fi
 fi 
 
 if ! type unbuffer > /dev/null; then
@@ -58,28 +82,52 @@ fi
 printGreen "Using $REF as reference."
 echo "" 
 
-printYellow "Running rubocop..." 
-$PREVPWD/rubocop.rb --against HEAD^ -c $PREVPWD/.rubocop.yml 
+printBlue "Running rubocop..." 
+$PREVPWD/rubocop.rb --against $REF -c $PREVPWD/.rubocop.yml  || true
+
+
+HAMLS=`git diff --diff-filter=AM --name-only ${REF} | grep haml || true` 
+NUM_HAMLS=`echo $HAMLS |  wc -w`
+
+
+if [ $NUM_HAMLS -gt 0 ]; then
+	echo ""
+	printBlue "Running haml-lint..."
+
+
+	echo Inspecting $NUM_HAMLS files
+	OFFENCES="0"
+
+	LINES=""
+	for haml in $HAMLS; do
+		RANGES=`git diff -p -U0 $REF $haml| grep @@ | cut -d+ -f2 | cut -d' ' -f1`
+		SEQ_STRING=`gen_seq "$RANGES"`
+		TMP=`unbuffer haml-lint $haml | grep --color=never "m${SEQ_STRING}\b" || true`
+		LINES="${LINES}${NEWLINE}${TMP}"
+		echo -ne '.'
+	done
+
+	echo ""
+	echo ""
+
+	OFFENCES=`echo $LINES |  sed '/^$/d' |  wc -l`
+
+	echo ""
+
+	if [ 0 -eq $OFFENCES ]; then
+		echo -ne "$NUM_HAMLS files inspected, "
+		printGreen "$OFFENCES offenses detected"
+	else
+		echo "Offences: ${NEWLINE}"
+		echo ${LINES}
+		echo ""
+		echo -ne "$NUM_HAMLS files inspected, "
+		printRed "$OFFENCES offenses detected"
+	fi
+fi
+
+#notify-send "Murphy: $OFFENCES offenses detected"
+notify-send "Murphy: All Done!"
 
 echo ""
-printYellow "Running haml-lint..."
-HAMLS=`git diff --diff-filter=AM --name-only ${REF} | grep haml`
-
-for haml in $HAMLS; do
-	RANGES=`git diff -p -U0 $REF $haml| grep @@ | cut -d+ -f2 | cut -d' ' -f1`
-	SEQ_STRING=`gen_seq "$RANGES"`
-	#echo haml-lint $haml \| grep --color=never "${SEQ_STRING}" || true
-	unbuffer haml-lint $haml | grep --color=never "m${SEQ_STRING}\b" || true
-done
-
-echo ""
-echo -n -e '\a'
-sleep 0.1
-echo -n -e '\a'
-echo -n -e '\a'
-sleep 0.1
-echo -n -e '\a'
-sleep 0.1
-echo -n -e '\a'
-sleep 0.1
 printBlue "All done!"

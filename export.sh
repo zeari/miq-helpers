@@ -5,16 +5,17 @@ colors.sh
 murphy.sh
 rubocop.rb
 .rubocop.yml
+wait_for_miq.sh
 "
 
-mkdir -p export
+mkdir -p murphy
 rm -r murphy.tar.gz
 
 for i in $files; do
-	cp $i export
+	cp $i murphy
 done
 
-tar cvzf murphy.tar.gz export
+tar cvzf murphy.tar.gz murphy
 
-rm -r export
+rm -r murphy
 

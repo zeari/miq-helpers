@@ -3,7 +3,8 @@
 set -e
 set -u
 
-source colors.sh
+PREVPWD="`dirname $0`"
+source $PREVPWD/colors.sh
 
 function clean_up {
 	printRed "Error"
@@ -34,3 +35,5 @@ sleep 0.1
 echo -e "\a"
 sleep 0.1
 printBlue "Done. Waited $DIFF years for miq."
+
+notify-send "Done. Waited $DIFF years for miq."
