@@ -7,4 +7,4 @@ http://ghost-justablog.rhcloud.com/setting-up-a-dockerized-openshift-on-fedora-2
 
 ```./murphy.sh``` Runs Rubocop and haml-lint on <b>changes made in the last commit</b>
 * Run from manageiq directory
-* rubocop.rb file originally by 
+* rubocop.rb file originally by skanev https://gist.github.com/skanev
