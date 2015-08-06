@@ -12,7 +12,8 @@ function clean_up {
 }
 
 trap clean_up SIGHUP SIGINT SIGTERM ERR
-
+echo "Restarting evm..."
+rake evm:kill evm:start 
 
 echo Waiting for miq
 DIFF=0
