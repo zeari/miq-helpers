@@ -119,7 +119,7 @@ if [ $NUM_HAMLS -gt 0 ]; then
 		printGreen "$OFFENCES offenses detected"
 	else
 		echo "Offences: ${NEWLINE}"
-		echo ${LINES}
+		echo "${LINES}"
 		echo ""
 		echo -ne "$NUM_HAMLS files inspected, "
 		printRed "$OFFENCES offenses detected"
