@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -u
 
 PREVPWD="`dirname $0`"
 source $PREVPWD/colors.sh
@@ -11,9 +10,28 @@ function clean_up {
 	exit
 }
 
+function die_error {
+        set +u
+	printRed "Error: $1"
+        exit
+}
+
+
 trap clean_up SIGHUP SIGINT SIGTERM ERR
 echo "Restarting evm..."
-rake evm:kill evm:start 
+
+sudo killall ruby &> /dev/null || true
+
+if [ "$1" == "db" ]; then
+	printRed "RESETTING DB!!"
+	rake evm:kill || die_error 'rake evm:kill failed'
+	sleep 3
+	rake evm:db:reset || die_error 'rake evm:db:reset failed'
+	rake evm:start 
+else
+	rake evm:kill evm:start 
+fi
+
 
 echo Waiting for miq
 DIFF=0
