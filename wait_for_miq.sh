@@ -20,10 +20,10 @@ function die_error {
 trap clean_up SIGHUP SIGINT SIGTERM ERR
 echo "Restarting evm..."
 
-sudo killall ruby &> /dev/null || true
 
 if [ "$1" == "db" ]; then
 	printRed "RESETTING DB!!"
+	sudo killall ruby &> /dev/null || true
 	rake evm:kill || die_error 'rake evm:kill failed'
 	sleep 3
 	rake evm:db:reset || die_error 'rake evm:db:reset failed'
