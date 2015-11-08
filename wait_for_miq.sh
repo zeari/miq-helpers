@@ -24,12 +24,12 @@ echo "Restarting evm..."
 if [ "$1" == "db" ]; then
 	printRed "RESETTING DB!!"
 	sudo killall ruby &> /dev/null || true
-	rake evm:kill || die_error 'rake evm:kill failed'
+	bundle exec bin/rake evm:kill || die_error 'bundle exec bin/rake evm:kill failed'
 	sleep 3
-	rake evm:db:reset || die_error 'rake evm:db:reset failed'
-	rake evm:start 
+	bundle exec bin/ake evm:db:reset || die_error 'bundle exec bin/rake evm:db:reset failed'
+	bundle exec bin/rake evm:start
 else
-	rake evm:kill evm:start 
+	bundle exec bin/rake evm:kill evm:start
 fi
 
 
