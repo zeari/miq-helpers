@@ -26,7 +26,7 @@ if [ "$1" == "db" ]; then
 	sudo killall ruby &> /dev/null || true
 	bundle exec bin/rake evm:kill || die_error 'bundle exec bin/rake evm:kill failed'
 	sleep 3
-	bundle exec bin/ake evm:db:reset || die_error 'bundle exec bin/rake evm:db:reset failed'
+	bundle exec bin/rake evm:db:reset || die_error 'bundle exec bin/rake evm:db:reset failed'
 	bundle exec bin/rake evm:start
 else
 	bundle exec bin/rake evm:kill evm:start
