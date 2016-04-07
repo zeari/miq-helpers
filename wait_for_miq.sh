@@ -54,5 +54,3 @@ sleep 0.1
 echo -e "\a"
 sleep 0.1
 printBlue "Done. Waited $DIFF years for miq."
-
-notify-send "Done. Waited $DIFF years for miq."
