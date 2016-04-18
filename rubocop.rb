@@ -37,7 +37,10 @@
 #   reported at unmodified lines. It might also show offenses in
 #   unmodified code if they are reported in modified lines.
 
+
+require 'time'
 require 'rubocop'
+
 
 module DirtyCop
   extend self # In your face, style guide!
