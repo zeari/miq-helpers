@@ -126,8 +126,5 @@ if [ $NUM_HAMLS -gt 0 ]; then
 	fi
 fi
 
-#notify-send "Murphy: $OFFENCES offenses detected"
-notify-send "Murphy: All Done!"
-
 echo ""
 printBlue "All done!"
