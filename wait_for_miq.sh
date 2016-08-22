@@ -29,7 +29,8 @@ if [ "$1" == "db" ]; then
 	bundle exec bin/rake evm:db:reset || die_error 'bundle exec bin/rake evm:db:reset failed'
 	bundle exec bin/rake evm:start
 else
-	bundle exec bin/rake evm:kill evm:start
+	bundle exec bin/rake evm:kill &> /dev/null || true
+	bundle exec bin/rake evm:start
 fi
 
 
