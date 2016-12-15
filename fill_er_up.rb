@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 # Load Rails
-ENV['RAILS_ENV'] = ARGV[0] || 'development'
 DIR = File.dirname(__FILE__)
-require DIR + '/../manageiq/config/environment'
+require DIR + "/load_rails.rb"
+LoadRails.load_rails
 
 # --------------------
 # functions and consts
@@ -66,4 +66,3 @@ create_prov_with_auth('Molecule', 'oshift01.eng.lab.tlv.redhat.com', token1)
 # ------------------------------
 
 ContainerImageRegistry.create(:host => "exampleHost", :name => "exampleHost", :port=>"1234").save
-
