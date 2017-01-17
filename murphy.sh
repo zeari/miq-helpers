@@ -82,8 +82,9 @@ fi
 printGreen "Using $REF as reference."
 echo "" 
 
-printBlue "Running rubocop..." 
-$PREVPWD/rubocop.rb --against $REF -c $PREVPWD/.rubocop.yml  || true
+printBlue "Running rubocop..."
+echo -e Using "\033[${Yellow}m`pwd`/.rubocop.yml${Clear}\n"
+$PREVPWD/rubocop.rb --against $REF -c .rubocop.yml  || true
 
 
 HAMLS=`git diff --diff-filter=AM --name-only ${REF} | grep haml || true` 
